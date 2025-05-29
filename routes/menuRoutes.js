@@ -47,3 +47,59 @@ app.get("/api/menu", (req, res) => {
          }
     });
 });
+
+//Funktion för att uppdatera databas med ny information
+
+app.post("/api/experience", (req, res) => {
+
+const { drinkName, drinkType, modifications, description, allergens } = req.body;
+
+    //Struktur för error-meddelanden
+    let errors = {
+        message: "",
+        detail: "",
+        https_response: {
+
+        }
+    };
+
+    //Kontrollera om alla fält är ifyllda
+        if(!drinkName || !drinkType || !modifications || !description || !allergens) {
+                //Error meddelamde
+                errors.message = "Alla fält måste vara ifyllda";
+                errors.detail = "Du måste fylla i drinkName, drinkType, modifications, description och allergens";
+        
+                //response kod
+                errors.https_response.message = "Bad request";
+                errors.https_response.code = 400;
+        
+                res.status(400).json(errors);
+        
+                return;
+    }
+
+    //Om inget är fel ska information läggas till i databas
+    client.query(`INSERT INTO menu (drinkName, drinkType, modifications, description, allergens) VALUES ($1, $2, $3, $4, $5, $6);`, [drinkName, drinkType, modifications, description, allergens], (err, results) => {
+    //Om något går fel visas felmeddelande
+    if(err) {
+        res.status(500).json({error: "Something went wrong: " + err});
+        return;
+    } else {
+        console.log("Nyprodukt tillagd skapat: " + results);
+
+        //Ny data läggs till i databasen med strukturen
+        let menu = {
+            drinkName: drinkName,
+            drinkType: drinkType,
+            modifications: modifications,
+            description: description,
+            allergens: allergens
+        };
+
+        res.json({message: "Ny produkt i menyn tillagd", menu});
+    }
+});
+
+
+})
+
