@@ -75,6 +75,21 @@ router.post("/login", async(req,res) => {
             return res.status(400).json({error: "Användarnamn och lösenord behöver vara ifyllt"})
         } 
 
+         //Kolla om användaren finns i databasen
+        client.query(`SELECT * FROM users WHERE username=$1`, [username], async (err, results) => {
+            if(err) {
+                res.status(400).json({message: "Autentiseringen gick fel"})
+            } else if (results.rows.length === 0) {
+                res.status(400).json({message: "Lösenord eller användarnamn stämde inte"})
+            } else {
+                let user = results.rows[0];
+                const passwordMatch = await bcrypt.compare(password, user.password);
+
+                if(!passwordMatch) {
+                    res.status(401).json({message: "Lösenordet eller användarnamn stämde inte"})
+                } else {
+                    res.status(200).json({message: "Användaren loggade in"})
+                }}})
 
 
     } catch {
