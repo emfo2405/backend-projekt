@@ -10,6 +10,25 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cors());
 
+//Uppkoppling till databas
+const client = new Client ({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+
+//Felmeddelande om inte anslutningen fungerar korrekt
+client.connect((err) => {
+if(err) {
+    console.error("Fel vid anslutning: " + err);
+}
+});
+
 const port = process.env.PORT || 3001;
 
 //Routes
