@@ -125,3 +125,19 @@ app.put("/api/menu/:id", (req, res) => {
     }
 });
 
+//Funktion för att radera ett inlägg i databasen
+app.delete("/api/menu/:id", (req,res) => {
+id= req.params.id;
+//Raderar inlägg i databasen där id är ett specifikt nummer
+client.query(`DELETE FROM menu WHERE id=$1`, [id], (error, results) => {
+    //Om något går fel eller id inte hittas visas felmeddelande annars raderas inlägget
+    if(error) {
+        res.status(500).json({message: "Något gick fel, försök igen senare"});
+    } else if (results.rowCount === 0) {
+        res.status(404).json({message: "Produkten hittades inte"});
+    } else {
+        res.json({message: "Produkten har raderats"});
+    }
+});
+});
+
