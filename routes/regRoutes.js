@@ -30,7 +30,19 @@ router.post("/register", async(req, res) => {
 
 //Logga in en användare
 router.post("/login", async(req,res) => {
-    console.log("Inloggning påbörjad");
+    try {
+                const { username, password } = req.body;
+
+        //Validera input
+        if(!username || !password) {
+            return res.status(400).json({error: "Användarnamn och lösenord behöver vara ifyllt"})
+        } 
+
+
+
+    } catch {
+        res.status(500).json({error: "Server error"});
+    }
 });
 
 module.exports = router;
