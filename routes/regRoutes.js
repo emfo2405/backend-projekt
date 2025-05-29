@@ -88,7 +88,15 @@ router.post("/login", async(req,res) => {
                 if(!passwordMatch) {
                     res.status(401).json({message: "Lösenordet eller användarnamn stämde inte"})
                 } else {
-                    res.status(200).json({message: "Användaren loggade in"})
+
+                    //Skapa JWT 
+                    const payload = {username: username };
+                    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: '1h'});
+                    const response = {
+                        message: "Användaren loggade in",
+                        token: token
+                    }
+                    res.status(200).json({response});
                 }}})
 
 
