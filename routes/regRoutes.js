@@ -45,9 +45,11 @@ router.post("/register", async(req, res) => {
             } else if (results.rows.length > 0) {
                 return res.status(400).json({message: "Användarnamn eller e-post finns redan"});
             }
-            
+
+                    //Kryptera lösenord
+        const hashedPassword = await bcrypt.hash(req.body.password, 10);
         
-        client.query(`INSERT INTO users (username, password, email) VALUES($1,$2,$3)`, [username, password, email], (err) => {
+        client.query(`INSERT INTO users (username, password, email) VALUES($1,$2,$3)`, [username, hashedPassword, email], (err) => {
 
         if(err) {
             res.status(400).json({message: "Det gick inte att skapa användaren..."});
