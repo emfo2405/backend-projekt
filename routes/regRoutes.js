@@ -6,6 +6,25 @@ require("dotenv").config();
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+//Uppkoppling till databas
+const client = new Client ({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+
+//Felmeddelande om inte anslutningen fungerar korrekt
+client.connect((err) => {
+if(err) {
+    console.error("Fel vid anslutning: " + err);
+}
+});
+
 //Lägga till en användare
 router.post("/register", async(req, res) => {
     try {
@@ -20,7 +39,23 @@ router.post("/register", async(req, res) => {
             return res.status(400).json({error: "E-post ska vara ifyllt"})
         }
 
-        res.status(201).json({message: "Användare skapad"});
+                client.query(`SELECT * FROM users WHERE username=$1 OR email=$2`, [username, email], async(err, results) => {
+            if(err) {
+                return res.status(500).json({ message: "Databasfel"});
+            } else if (results.rows.length > 0) {
+                return res.status(400).json({message: "Användarnamn eller e-post finns redan"});
+            }
+            
+        
+        client.query(`INSERT INTO users (username, password, email) VALUES($1,$2,$3)`, [username, password, email], (err) => {
+
+        if(err) {
+            res.status(400).json({message: "Det gick inte att skapa användaren..."});
+        } else {
+            res.status(201).json({message: "Användare skapad"});
+        }
+})
+        }); 
         
 
     } catch {
