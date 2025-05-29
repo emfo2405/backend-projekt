@@ -100,6 +100,28 @@ const { drinkName, drinkType, modifications, description, allergens } = req.body
     }
 });
 
+});
 
-})
+//För att uppdatera data i databasen används put med ett specifikt id för datan
+app.put("/api/menu/:id", (req, res) => {
+    let id = req.params.id;
+    let { drinkName, drinkType, modifications, description, allergens} = req.body;
+
+    //Om inte allt är ifyllt visas ett felmeddelande
+    if(!drinkName || !drinkType || !modifications || !description || !allergens) {
+        return res.status(400).json({message: "drinkName, drinkType, modifications, description, allergens måste vara ifyllda"})
+        //Om allt är korrekt uppdateras informationen i databasen
+    } else {
+        client.query(`UPDATE menu SET drinkName=$1, drinkType=$2, modifications=$3, description=$4, allergens=$5 WHERE id=$6`, [drinkName, drinkType, modifications, description, allergens, id], (error, results) => {
+            //Om något går fel visas felmeddelanden annars uppdateras inlägget
+            if(error) {
+                res.status(500).json({message: "Något gick fel, försök igen senare"});
+            } else if (results.rowCount === 0) {
+                res.status(404).json({message: "Produkten hittades inte"});
+            } else {
+                res.json({message: "Produkten har uppdaterats"})
+            }
+        })
+    }
+});
 
