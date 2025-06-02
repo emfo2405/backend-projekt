@@ -78,6 +78,14 @@ const { drinkName, drinkType, price, description, allergens } = req.body;
                 return;
     }
 
+    client.query(`SELECT * FROM menu WHERE drinkName=$1`, [drinkName], async(err, results) => {
+        if(err) {
+            return res.status(500).json({ message: "Databasfel"});
+            } else if (results.rows.length > 0) {
+                return res.status(400).json({message: "Drycken finns redan i menyn"})
+            }
+    });
+
     //Om inget är fel ska information läggas till i databas
     client.query(`INSERT INTO menu (drinkName, drinkType, price, description, allergens) VALUES ($1, $2, $3, $4, $5);`, [drinkName, drinkType, price, description, allergens], (err, results) => {
     //Om något går fel visas felmeddelande
