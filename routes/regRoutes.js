@@ -51,10 +51,10 @@ router.post("/register", async(req, res) => {
         const { username, password, email } = req.body;
 
         //Validera input
-        if(!username || username.length < 6) {
-            return res.status(400).json({error: "Användarnamn ska vara ifyllt och längre än 5 tecken"})
-        } else if(!password || password.length < 9) {
-            return res.status(400).json({error: "Lösenord ska vara ifyllt och längre än 8 tecken"})
+        if(!username || username.length < 5) {
+            return res.status(400).json({error: "Användarnamn ska vara ifyllt och minst 5 tecken långt"})
+        } else if(!password || password.length < 8) {
+            return res.status(400).json({error: "Lösenord ska vara ifyllt och minst 8 tecken långt"})
         } else if(!email) {
             return res.status(400).json({error: "E-post ska vara ifyllt"})
         }

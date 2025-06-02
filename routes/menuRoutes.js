@@ -50,9 +50,9 @@ router.get("/api/menu", (req, res) => {
 
 //Funktion för att uppdatera databas med ny information
 
-router.post("/api/experience", (req, res) => {
+router.post("/api/menu", (req, res) => {
 
-const { drinkName, drinkType, modifications, description, allergens } = req.body;
+const { drinkName, drinkType, price, modifications, description, allergens } = req.body;
 
     //Struktur för error-meddelanden
     let errors = {
@@ -64,7 +64,7 @@ const { drinkName, drinkType, modifications, description, allergens } = req.body
     };
 
     //Kontrollera om alla fält är ifyllda
-        if(!drinkName || !drinkType || !modifications || !description || !allergens) {
+        if(!drinkName || !drinkType || !price || !modifications || !description || !allergens) {
                 //Error meddelamde
                 errors.message = "Alla fält måste vara ifyllda";
                 errors.detail = "Du måste fylla i drinkName, drinkType, modifications, description och allergens";
@@ -79,7 +79,7 @@ const { drinkName, drinkType, modifications, description, allergens } = req.body
     }
 
     //Om inget är fel ska information läggas till i databas
-    client.query(`INSERT INTO menu (drinkName, drinkType, modifications, description, allergens) VALUES ($1, $2, $3, $4, $5, $6);`, [drinkName, drinkType, modifications, description, allergens], (err, results) => {
+    client.query(`INSERT INTO menu (drinkName, drinkType, price, modifications, description, allergens) VALUES ($1, $2, $3, $4, $5, $6);`, [drinkName, drinkType, modifications, description, allergens], (err, results) => {
     //Om något går fel visas felmeddelande
     if(err) {
         res.status(500).json({error: "Something went wrong: " + err});
@@ -91,6 +91,7 @@ const { drinkName, drinkType, modifications, description, allergens } = req.body
         let menu = {
             drinkName: drinkName,
             drinkType: drinkType,
+            price: price,
             modifications: modifications,
             description: description,
             allergens: allergens
@@ -105,14 +106,14 @@ const { drinkName, drinkType, modifications, description, allergens } = req.body
 //För att uppdatera data i databasen används put med ett specifikt id för datan
 router.put("/api/menu/:id", (req, res) => {
     let id = req.params.id;
-    let { drinkName, drinkType, modifications, description, allergens} = req.body;
+    let { drinkName, drinkType, price, modifications, description, allergens} = req.body;
 
     //Om inte allt är ifyllt visas ett felmeddelande
-    if(!drinkName || !drinkType || !modifications || !description || !allergens) {
-        return res.status(400).json({message: "drinkName, drinkType, modifications, description, allergens måste vara ifyllda"})
+    if(!drinkName || !drinkType || !price || !modifications || !description || !allergens) {
+        return res.status(400).json({message: "drinkName, drinkType, price, modifications, description, allergens måste vara ifyllda"})
         //Om allt är korrekt uppdateras informationen i databasen
     } else {
-        client.query(`UPDATE menu SET drinkName=$1, drinkType=$2, modifications=$3, description=$4, allergens=$5 WHERE id=$6`, [drinkName, drinkType, modifications, description, allergens, id], (error, results) => {
+        client.query(`UPDATE menu SET drinkName=$1, drinkType=$2, price=$3, modifications=$4, description=$5, allergens=$6 WHERE id=$7`, [drinkName, drinkType, price, modifications, description, allergens, id], (error, results) => {
             //Om något går fel visas felmeddelanden annars uppdateras inlägget
             if(error) {
                 res.status(500).json({message: "Något gick fel, försök igen senare"});
