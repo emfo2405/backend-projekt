@@ -25,6 +25,26 @@ if(err) {
 }
 });
 
+//Hämta alla användare från databas
+router.get("/register", (req, res) => {
+
+
+        client.query(`SELECT * FROM users;`, (err, results) =>{
+        //Felmeddelande om något går fel
+         if(err) {
+        res.status(500).json({error: "Något gick fel: " + err});
+        return;
+         }
+         //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
+         if(results.rows.length === 0) {
+            res.status(200).json({error: "Inga användare hittades"});
+         } else {
+            res.json(results.rows);
+         }
+        })
+        
+});
+
 //Lägga till en användare
 router.post("/register", async(req, res) => {
     try {

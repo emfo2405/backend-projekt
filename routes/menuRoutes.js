@@ -25,12 +25,12 @@ if(err) {
 }
 });
 
-app.get("/api", (req, res) => {
+router.get("/api", (req, res) => {
     res.json({message: "Välkommen till mitt API"});
 });
 
 //Funktion för att kunna hämta in information från databas
-app.get("/api/menu", (req, res) => {
+router.get("/api/menu", (req, res) => {
     //Hämta in information från databas och tabellen menu
     client.query(`SELECT * FROM menu;`, (err, results) => {
         //Felmeddelande om något går fel
@@ -50,7 +50,7 @@ app.get("/api/menu", (req, res) => {
 
 //Funktion för att uppdatera databas med ny information
 
-app.post("/api/experience", (req, res) => {
+router.post("/api/experience", (req, res) => {
 
 const { drinkName, drinkType, modifications, description, allergens } = req.body;
 
@@ -103,7 +103,7 @@ const { drinkName, drinkType, modifications, description, allergens } = req.body
 });
 
 //För att uppdatera data i databasen används put med ett specifikt id för datan
-app.put("/api/menu/:id", (req, res) => {
+router.put("/api/menu/:id", (req, res) => {
     let id = req.params.id;
     let { drinkName, drinkType, modifications, description, allergens} = req.body;
 
@@ -126,7 +126,7 @@ app.put("/api/menu/:id", (req, res) => {
 });
 
 //Funktion för att radera ett inlägg i databasen
-app.delete("/api/menu/:id", (req,res) => {
+router.delete("/api/menu/:id", (req,res) => {
 id= req.params.id;
 //Raderar inlägg i databasen där id är ett specifikt nummer
 client.query(`DELETE FROM menu WHERE id=$1`, [id], (error, results) => {
@@ -140,4 +140,6 @@ client.query(`DELETE FROM menu WHERE id=$1`, [id], (error, results) => {
     }
 });
 });
+
+module.exports = router;
 
