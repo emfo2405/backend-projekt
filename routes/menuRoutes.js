@@ -30,7 +30,7 @@ router.get("/api", (req, res) => {
 });
 
 //Funktion för att kunna hämta in information från databas
-router.get("/api/menu", (req, res) => {
+router.get("/menu", (req, res) => {
     //Hämta in information från databas och tabellen menu
     client.query(`SELECT * FROM menu;`, (err, results) => {
         //Felmeddelande om något går fel
@@ -50,9 +50,9 @@ router.get("/api/menu", (req, res) => {
 
 //Funktion för att uppdatera databas med ny information
 
-router.post("/api/menu", (req, res) => {
+router.post("/menu", (req, res) => {
 
-const { drinkName, drinkType, price, modifications, description, allergens } = req.body;
+const { drinkName, drinkType, price, description, allergens } = req.body;
 
     //Struktur för error-meddelanden
     let errors = {
@@ -64,10 +64,10 @@ const { drinkName, drinkType, price, modifications, description, allergens } = r
     };
 
     //Kontrollera om alla fält är ifyllda
-        if(!drinkName || !drinkType || !price || !modifications || !description || !allergens) {
+        if(!drinkName || !drinkType || !price || !description || !allergens) {
                 //Error meddelamde
                 errors.message = "Alla fält måste vara ifyllda";
-                errors.detail = "Du måste fylla i drinkName, drinkType, modifications, description och allergens";
+                errors.detail = "Du måste fylla i drinkName, drinkType, price, description och allergens";
         
                 //response kod
                 errors.https_response.message = "Bad request";
@@ -79,7 +79,7 @@ const { drinkName, drinkType, price, modifications, description, allergens } = r
     }
 
     //Om inget är fel ska information läggas till i databas
-    client.query(`INSERT INTO menu (drinkName, drinkType, price, modifications, description, allergens) VALUES ($1, $2, $3, $4, $5, $6);`, [drinkName, drinkType, modifications, description, allergens], (err, results) => {
+    client.query(`INSERT INTO menu (drinkName, drinkType, price, description, allergens) VALUES ($1, $2, $3, $4, $5);`, [drinkName, drinkType, price, description, allergens], (err, results) => {
     //Om något går fel visas felmeddelande
     if(err) {
         res.status(500).json({error: "Something went wrong: " + err});
@@ -92,7 +92,6 @@ const { drinkName, drinkType, price, modifications, description, allergens } = r
             drinkName: drinkName,
             drinkType: drinkType,
             price: price,
-            modifications: modifications,
             description: description,
             allergens: allergens
         };
@@ -104,16 +103,16 @@ const { drinkName, drinkType, price, modifications, description, allergens } = r
 });
 
 //För att uppdatera data i databasen används put med ett specifikt id för datan
-router.put("/api/menu/:id", (req, res) => {
+router.put("/menu/:id", (req, res) => {
     let id = req.params.id;
-    let { drinkName, drinkType, price, modifications, description, allergens} = req.body;
+    let { drinkName, drinkType, price, description, allergens} = req.body;
 
     //Om inte allt är ifyllt visas ett felmeddelande
-    if(!drinkName || !drinkType || !price || !modifications || !description || !allergens) {
-        return res.status(400).json({message: "drinkName, drinkType, price, modifications, description, allergens måste vara ifyllda"})
+    if(!drinkName || !drinkType || !price || !description || !allergens) {
+        return res.status(400).json({message: "drinkName, drinkType, price, description, allergens måste vara ifyllda"})
         //Om allt är korrekt uppdateras informationen i databasen
     } else {
-        client.query(`UPDATE menu SET drinkName=$1, drinkType=$2, price=$3, modifications=$4, description=$5, allergens=$6 WHERE id=$7`, [drinkName, drinkType, price, modifications, description, allergens, id], (error, results) => {
+        client.query(`UPDATE menu SET drinkName=$1, drinkType=$2, price=$3, description=$4, allergens=$5 WHERE id=$6`, [drinkName, drinkType, price, description, allergens, id], (error, results) => {
             //Om något går fel visas felmeddelanden annars uppdateras inlägget
             if(error) {
                 res.status(500).json({message: "Något gick fel, försök igen senare"});
@@ -127,7 +126,7 @@ router.put("/api/menu/:id", (req, res) => {
 });
 
 //Funktion för att radera ett inlägg i databasen
-router.delete("/api/menu/:id", (req,res) => {
+router.delete("/menu/:id", (req,res) => {
 id= req.params.id;
 //Raderar inlägg i databasen där id är ett specifikt nummer
 client.query(`DELETE FROM menu WHERE id=$1`, [id], (error, results) => {

@@ -33,6 +33,8 @@ async function install() {
         email VARCHAR(100) NOT NULL,
         account_created DATE DEFAULT CURRENT_TIMESTAMP);
         `;
+
+
         await client.query(sqlUser);
 
         const sqlMenu = `
@@ -41,13 +43,12 @@ async function install() {
         drinkName VARCHAR(50) NOT NULL,
         drinkType VARCHAR(50) NOT NULL,
         price INTEGER NOT NULL,
-        modifications VARCHAR(255) NOT NULL,
         description VARCHAR(255) NOT NULL,
         allergens VARCHAR(50) NOT NULL,
         item_created DATE DEFAULT CURRENT_TIMESTAMP);
         `;
         await client.query(sqlMenu);
-        console.log("tabell skapad");
+        console.log("tabeller skapade");
 
 
 
