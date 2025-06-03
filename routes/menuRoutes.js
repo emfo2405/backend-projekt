@@ -41,7 +41,7 @@ router.get("/menu", (req, res) => {
          console.log(results);
          //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
          if(results.rows.length === 0) {
-            res.status(200).json({error: ""});
+            res.status(200).json({error: "Det finns inga produkter"});
          } else {
             res.json(results);
          }

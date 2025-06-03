@@ -42,7 +42,7 @@ async function install() {
         id SERIAL PRIMARY KEY,
         drinkName VARCHAR(50) NOT NULL,
         drinkType VARCHAR(50) NOT NULL,
-        price INTEGER NOT NULL,
+        price VARCHAR(6) NOT NULL,
         description VARCHAR(255) NOT NULL,
         allergens VARCHAR(50) NOT NULL,
         item_created DATE DEFAULT CURRENT_TIMESTAMP);
