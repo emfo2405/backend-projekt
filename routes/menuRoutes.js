@@ -70,50 +70,24 @@ router.get("/menu/:id", (req, res) => {
 
 //Funktion för att uppdatera databas med ny information
 
-router.post("/menu", (req, res) => {
+router.post("/menu", async (req, res) => {
 
 const { drinkName, drinkType, price, description, allergens } = req.body;
 
-    //Struktur för error-meddelanden
-    let errors = {
-        message: "",
-        detail: "",
-        https_response: {
-
-        }
-    };
-
     //Kontrollera om alla fält är ifyllda
         if(!drinkName || !drinkType || !price || !description || !allergens) {
-                //Error meddelamde
-                errors.message = "Alla fält måste vara ifyllda";
-                errors.detail = "Du måste fylla i drinkName, drinkType, price, description och allergens";
-        
-                //response kod
-                errors.https_response.message = "Bad request";
-                errors.https_response.code = 400;
-        
-                res.status(400).json(errors);
-        
-                return;
+
+           return res.status(400).json({error: "Alla fält måste vara ifyllda"})
     }
 
-    client.query(`SELECT * FROM menu WHERE drinkName=$1`, [drinkName], async(err, results) => {
-        if(err) {
-            return res.status(500).json({ message: "Databasfel"});
-            } else if (results.rows.length > 0) {
-                return res.status(400).json({message: "Drycken finns redan i menyn"})
+   try { const result = await client.query(`SELECT * FROM menu WHERE drinkName=$1`, [drinkName]);
+         if (result.rows.length > 0) {
+                return res.status(400).json({message: "Drycken finns redan i menyn"});
             }
-    });
+    
 
     //Om inget är fel ska information läggas till i databas
-    client.query(`INSERT INTO menu (drinkName, drinkType, price, description, allergens) VALUES ($1, $2, $3, $4, $5);`, [drinkName, drinkType, price, description, allergens], (err, results) => {
-    //Om något går fel visas felmeddelande
-    if(err) {
-        res.status(500).json({error: "Something went wrong: " + err});
-        return;
-    } else {
-        console.log("Nyprodukt tillagd skapat: " + results);
+    await client.query(`INSERT INTO menu (drinkName, drinkType, price, description, allergens) VALUES ($1, $2, $3, $4, $5);`, [drinkName, drinkType, price, description, allergens]);
 
         //Ny data läggs till i databasen med strukturen
         let menu = {
@@ -125,8 +99,9 @@ const { drinkName, drinkType, price, description, allergens } = req.body;
         };
 
         res.json({message: "Ny produkt i menyn tillagd", menu});
+    } catch (err) {
+        res.status(500).json({message: "Något gick fel" });
     }
-});
 
 });
 

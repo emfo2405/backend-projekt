@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const regRoutes = require("./routes/regRoutes");
 const menuRoutes = require("./routes/menuRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
+const contactRoutes = require("./routes/contactRoutes");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 require("dotenv").config();
@@ -39,6 +40,8 @@ app.use("/api", regRoutes);
 app.use("/api", menuRoutes);
 
 app.use("/api", bookingRoutes);
+
+app.use("/api", contactRoutes);
 
 //Skapa en skyddad route
 app.get("/api/secret", authenticateToken, (req, res) => {

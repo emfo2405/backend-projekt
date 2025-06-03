@@ -52,11 +52,11 @@ router.post("/register", async(req, res) => {
 
         //Validera input
         if(!username || username.length < 5) {
-            return res.status(400).json({error: "Användarnamn ska vara ifyllt och minst 5 tecken långt"})
+            return res.status(400).json({message: "Användarnamn ska vara ifyllt och minst 5 tecken långt"})
         } else if(!password || password.length < 8) {
-            return res.status(400).json({error: "Lösenord ska vara ifyllt och minst 8 tecken långt"})
+            return res.status(400).json({message: "Lösenord ska vara ifyllt och minst 8 tecken långt"})
         } else if(!email) {
-            return res.status(400).json({error: "E-post ska vara ifyllt"})
+            return res.status(400).json({message: "E-post ska vara ifyllt"})
         }
 
                 client.query(`SELECT * FROM users WHERE username=$1 OR email=$2`, [username, email], async(err, results) => {
@@ -92,7 +92,7 @@ router.post("/login", async(req,res) => {
 
         //Validera input
         if(!username || !password) {
-            return res.status(400).json({error: "Användarnamn och lösenord behöver vara ifyllt"})
+            return res.status(400).json({message: "Användarnamn och lösenord behöver vara ifyllt"})
         } 
 
          //Kolla om användaren finns i databasen
