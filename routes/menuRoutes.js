@@ -48,6 +48,26 @@ router.get("/menu", (req, res) => {
     });
 });
 
+//Funktion för att kunna hämta in information från databas för ett specifikt id
+router.get("/menu/:id", (req, res) => {
+    let id = req.params.id;
+    //Hämta in information från databas och tabellen menu
+    client.query(`SELECT * FROM menu WHERE id=$1`, [id], (err, results) => {
+        //Felmeddelande om något går fel
+         if(err) {
+        res.status(500).json({error: "Något gick fel: " + err});
+        return;
+         }
+         console.log(results);
+         //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
+         if(results.rows.length === 0) {
+            res.status(200).json({error: "Det finns inga produkter"});
+         } else {
+            res.json(results);
+         }
+    });
+});
+
 //Funktion för att uppdatera databas med ny information
 
 router.post("/menu", (req, res) => {
