@@ -3,6 +3,7 @@ const { Client } = require("pg");
 const bodyParser = require("body-parser");
 const regRoutes = require("./routes/regRoutes");
 const menuRoutes = require("./routes/menuRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 const jwt = require("jsonwebtoken");
 const cors = require("cors");
 require("dotenv").config();
@@ -36,6 +37,8 @@ const port = process.env.PORT || 3001;
 app.use("/api", regRoutes);
 
 app.use("/api", menuRoutes);
+
+app.use("/api", bookingRoutes);
 
 //Skapa en skyddad route
 app.get("/api/secret", authenticateToken, (req, res) => {

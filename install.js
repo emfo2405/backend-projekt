@@ -48,6 +48,20 @@ async function install() {
         item_created DATE DEFAULT CURRENT_TIMESTAMP);
         `;
         await client.query(sqlMenu);
+
+        const sqlBooking = `
+        CREATE TABLE booking(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        email VARCHAR(50) NOT NULL,
+        date DATE NOT NULL,
+        time TIME NOT NULL,
+        message VARCHAR(200),
+        item_created DATE DEFAULT CURRENT_TIMESTAMP);
+        `;
+        await client.query(sqlBooking);
+
+
         console.log("tabeller skapade");
 
 
