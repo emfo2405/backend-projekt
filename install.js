@@ -42,7 +42,7 @@ async function install() {
         id SERIAL PRIMARY KEY,
         drinkName VARCHAR(50) NOT NULL,
         drinkType VARCHAR(50) NOT NULL,
-        price VARCHAR(6) NOT NULL,
+        price INTEGER NOT NULL,
         description VARCHAR(255) NOT NULL,
         allergens VARCHAR(50) NOT NULL,
         item_created DATE DEFAULT CURRENT_TIMESTAMP);
@@ -60,6 +60,16 @@ async function install() {
         item_created DATE DEFAULT CURRENT_TIMESTAMP);
         `;
         await client.query(sqlBooking);
+
+        const sqlContact = `
+        CREATE TABLE contact(
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        email VARCHAR(50) NOT NULL,
+        message VARCHAR(200),
+        item_created DATE DEFAULT CURRENT_TIMESTAMP);
+        `;
+        await client.query(sqlContact);
 
 
         console.log("tabeller skapade");
