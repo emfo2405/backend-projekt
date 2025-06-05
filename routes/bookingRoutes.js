@@ -25,6 +25,7 @@ if(err) {
 }
 });
 
+//Koppling till api
 router.get("/api", (req, res) => {
     res.json({message: "Välkommen till mitt API"});
 });
@@ -38,7 +39,6 @@ router.get("/booking", (req, res) => {
         res.status(500).json({error: "Något gick fel: " + err});
         return;
          }
-         console.log(results);
          //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
          if(results.rows.length === 0) {
             res.status(200).json({error: "Det finns inga produkter"});
@@ -58,7 +58,6 @@ router.get("/booking/:id", (req, res) => {
         res.status(500).json({error: "Något gick fel: " + err});
         return;
          }
-         console.log(results);
          //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
          if(results.rows.length === 0) {
             res.status(200).json({error: "Det finns inga produkter"});
@@ -71,33 +70,14 @@ router.get("/booking/:id", (req, res) => {
 //Funktion för att uppdatera databas med ny information
 
 router.post("/booking", (req, res) => {
-
+//Hämtar in element från body
 const { name, email, date, time, message } = req.body;
-
-    //Struktur för error-meddelanden
-    let errors = {
-        message: "",
-        detail: "",
-        https_response: {
-
-        }
-    };
 
     //Kontrollera om alla fält är ifyllda
         if(!name || !email || !date || !time) {
-                //Error meddelamde
-                errors.message = "Alla fält måste vara ifyllda";
-                errors.detail = "Du måste fylla i name, email, date och time";
-        
-                //response kod
-                errors.https_response.message = "Bad request";
-                errors.https_response.code = 400;
-        
-                res.status(400).json(errors);
-        
+            res.status(400).json({message: "Alla fält måste vara ifyllda"});
                 return;
     }
-
 
     //Om inget är fel ska information läggas till i databas
     client.query(`INSERT INTO booking (name, email, date, time, message) VALUES ($1, $2, $3, $4, $5);`, [name, email, date, time, message], (err, results) => {
@@ -106,7 +86,7 @@ const { name, email, date, time, message } = req.body;
         res.status(500).json({error: "Something went wrong: " + err});
         return;
     } else {
-        console.log("Ny bokning skapat: " + results);
+        console.log("Ny bokning skapad: " + results);
 
         //Ny data läggs till i databasen med strukturen
         let booking = {

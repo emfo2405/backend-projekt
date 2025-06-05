@@ -24,7 +24,7 @@ if(err) {
     console.error("Fel vid anslutning: " + err);
 }
 });
-
+//Kopplar till API
 router.get("/api", (req, res) => {
     res.json({message: "Välkommen till mitt API"});
 });
@@ -38,7 +38,6 @@ router.get("/menu", (req, res) => {
         res.status(500).json({error: "Något gick fel: " + err});
         return;
          }
-         console.log(results);
          //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
          if(results.rows.length === 0) {
             res.status(200).json({error: "Det finns inga produkter"});
@@ -58,7 +57,6 @@ router.get("/menu/:id", (req, res) => {
         res.status(500).json({error: "Något gick fel: " + err});
         return;
          }
-         console.log(results);
          //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
          if(results.rows.length === 0) {
             res.status(200).json({error: "Det finns inga produkter"});
@@ -69,17 +67,16 @@ router.get("/menu/:id", (req, res) => {
 });
 
 //Funktion för att uppdatera databas med ny information
-
 router.post("/menu", async (req, res) => {
-
+//Hämtar element från body
 const { drinkName, drinkType, price, description, allergens } = req.body;
 
-    //Kontrollera om alla fält är ifyllda
+    //Kontrollera om alla fält är ifyllda annars visas ett felmeddelande
         if(!drinkName || !drinkType || !price || !description || !allergens) {
 
            return res.status(400).json({error: "Alla fält måste vara ifyllda"})
     }
-
+//Hämtar alla element från menu med specifikt drinkname
    try { const result = await client.query(`SELECT * FROM menu WHERE drinkName=$1`, [drinkName]);
          if (result.rows.length > 0) {
                 return res.status(400).json({message: "Drycken finns redan i menyn"});
@@ -107,6 +104,7 @@ const { drinkName, drinkType, price, description, allergens } = req.body;
 
 //För att uppdatera data i databasen används put med ett specifikt id för datan
 router.put("/menu/:id", (req, res) => {
+    //Hämtar element från body
     let id = req.params.id;
     let { drinkName, drinkType, price, description, allergens} = req.body;
 

@@ -38,7 +38,6 @@ router.get("/contact", (req, res) => {
         res.status(500).json({error: "Något gick fel: " + err});
         return;
          }
-         console.log(results);
          //Om det inte finns något i tabellen visas felmeddelande annars returneras resultat
          if(results.rows.length === 0) {
             res.status(200).json({error: "Det finns inga meddelanden"});
@@ -71,30 +70,12 @@ router.get("/contact/:id", (req, res) => {
 //Funktion för att uppdatera databas med ny information
 
 router.post("/contact", (req, res) => {
-
+//Hämtar in element från body
 const { name, email, message } = req.body;
-
-    //Struktur för error-meddelanden
-    let errors = {
-        message: "",
-        detail: "",
-        https_response: {
-
-        }
-    };
 
     //Kontrollera om alla fält är ifyllda
         if(!name || !email || !message) {
-                //Error meddelamde
-                errors.message = "Alla fält måste vara ifyllda";
-                errors.detail = "Du måste fylla i name, email och message";
-        
-                //response kod
-                errors.https_response.message = "Bad request";
-                errors.https_response.code = 400;
-        
-                res.status(400).json(errors);
-        
+            res.status(400).json({error: "Alla fält måste vara ifyllda"});
                 return;
     }
 
