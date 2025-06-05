@@ -22,9 +22,6 @@ async function install() {
         await client.connect();
         console.log("Anslutning till databas lyckades");
 
-        await client.query(`DROP TABLE IF EXISTS users, menu, booking, contact`);
-
-
         const sqlUser = `
         CREATE TABLE users(
         id SERIAL PRIMARY KEY,
