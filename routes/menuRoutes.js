@@ -95,7 +95,7 @@ const { drinkName, drinkType, price, description, allergens } = req.body;
             allergens: allergens
         };
 
-        res.json({message: "Ny produkt i menyn tillagd", menu});
+        res.json({message: "Ny produkt tillagd i menyn", menu});
     } catch (err) {
         res.status(500).json({message: "Något gick fel" });
     }
