@@ -72,10 +72,18 @@ router.post("/menu", async (req, res) => {
 const { drinkName, drinkType, price, description, allergens } = req.body;
 
     //Kontrollera om alla fält är ifyllda annars visas ett felmeddelande
-        if(!drinkName || !drinkType || !price || !description || !allergens) {
-
-           return res.status(400).json({error: "Alla fält måste vara ifyllda"})
+        if(!drinkName) {
+           return res.status(400).json({error: "Se till att dryckens namn är ifyllt"})
+    } else if (!drinkType){
+        return res.status(400).json({error: "Se till att dryckens typ är vald"})
+    }else if(!price) {
+        return res.status(400).json({error: "Se till att pris är satt"})
+    }else if (!description) {
+        return res.status(400).json({error: "Se till att en beskrivning finns"})
+    }else if (!allergens){
+        return res.status(400).json({error: "Se till att allergener är ifyllda"})
     }
+
 //Hämtar alla element från menu med specifikt drinkname
    try { const result = await client.query(`SELECT * FROM menu WHERE drinkName=$1`, [drinkName]);
          if (result.rows.length > 0) {
