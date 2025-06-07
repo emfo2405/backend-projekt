@@ -83,8 +83,8 @@ router.post("/booking", (req, res) => {
     } else if (!date) {
         res.status(400).json({ message: "Se till att ett datum är valt" });
         return;
-    } else if (!time) {
-        res.status(400).json({ message: "Se till att en tid är vald" });
+    } else if (!time || time < '09:00' || time > '21:00') {
+        res.status(400).json({ message: "Se till att en tid är vald och inom våra öppettider" });
         return;
     }
 
